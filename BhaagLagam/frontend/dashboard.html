@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - BhaagLagam</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1e1e2f;
+            --accent: #ff4b5c;
+            --light: #f4f4f9;
+            --dark: #141414;
+            --gradient: linear-gradient(135deg, #ff4b5c, #f9cb28);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--primary);
+            color: var(--light);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(0, 0, 0, 0.2);
+            margin-bottom: 2rem;
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        .profile-section {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+        }
+
+        .profile-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--dark);
+            border-radius: 8px;
+            padding: 1rem;
+            min-width: 200px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+        }
+
+        .profile-section:hover .profile-dropdown {
+            display: block;
+        }
+
+        .profile-info {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-email {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .profile-actions a {
+            display: block;
+            padding: 0.5rem;
+            color: var(--light);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .profile-actions a:hover {
+            color: var(--accent);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .dashboard-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            color: var(--accent);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .recent-activity {
+            margin-top: 2rem;
+        }
+
+        .activity-list {
+            list-style: none;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .activity-details {
+            flex: 1;
+        }
+
+        .activity-title {
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-meta {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="dashboard.html" class="nav-brand">BhaagLagam</a>
+        <div class="nav-links">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="groups.html">Groups</a>
+            <a href="expenses.html">Expenses</a>
+            <div class="profile-section">
+                <div class="profile-avatar" id="profile-avatar">
+                    <!-- Will be populated by JS -->
+                </div>
+                <div class="profile-dropdown">
+                    <div class="profile-info">
+                        <div class="profile-name" id="profile-name">Loading...</div>
+                        <div class="profile-email" id="profile-email">Loading...</div>
+                    </div>
+                    <div class="profile-actions">
+                        <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+                        <a href="#" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="dashboard-grid">
+            <!-- Profile Overview -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h2 class="card-title">Profile Overview</h2>
+                    <a href="profile.html" class="btn btn-outline">Edit Profile</a>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="total-balance">$0.00</div>
+                        <div class="stat-label">Total Balance</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="active-groups">0</div>
+                        <div class="stat-label">Active Groups</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="you-owe">$0.00</div>
+                        <div class="stat-label">You Owe</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="owed-to-you">$0.00</div>
+                        <div class="stat-label">Owed to You</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h2 class="card-title">Recent Activity</h2>
+                    <a href="expenses.html" class="btn btn-outline">View All</a>
+                </div>
+                <div class="recent-activity">
+                    <ul class="activity-list" id="recent-activity">
+                        <!-- Activity items will be loaded dynamically -->
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h2 class="card-title">Quick Actions</h2>
+                </div>
+                <div style="display: grid; gap: 1rem;">
+                    <a href="expenses.html" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add New Expense
+                    </a>
+                    <a href="groups.html" class="btn btn-outline">
+                        <i class="fas fa-users"></i> Create New Group
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/profile.js"></script>
+    <script>
+        // Load recent activity
+        async function loadRecentActivity() {
+            try {
+                const response = await fetch(`${CONFIG.API_BASE_URL}${CONFIG.ENDPOINTS.EXPENSES}?limit=5`, {
+                    headers: getAuthHeaders()
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch recent activity');
+                }
+
+                const activities = await response.json();
+                const activityList = document.getElementById('recent-activity');
+                
+                if (activities.length === 0) {
+                    activityList.innerHTML = '<li class="activity-item">No recent activity</li>';
+                    return;
+                }
+
+                activityList.innerHTML = activities.map(activity => `
+                    <li class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-receipt"></i>
+                        </div>
+                        <div class="activity-details">
+                            <div class="activity-title">${activity.description}</div>
+                            <div class="activity-meta">
+                                ${activity.group_name} • $${activity.amount.toFixed(2)} • 
+                                ${new Date(activity.created_at).toLocaleDateString()}
+                            </div>
+                        </div>
+                    </li>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading recent activity:', error);
+            }
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            loadRecentActivity();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,198 @@
+/* css/expenses.css */
+:root {
+    --primary: #2C3E50;
+    --accent: #E74C3C;
+    --light: #ECF0F1;
+    --dark: #1F1F1F;
+    --food-color: #E74C3C;
+    --entertainment-color: #9B59B6;
+    --transportation-color: #3498DB;
+    --other-color: #2ECC71;
+}
+
+.expenses-header {
+    background: linear-gradient(135deg, var(--primary), var(--dark));
+    color: white;
+    padding: 20px;
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.summary-cards {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+}
+
+.summary-card {
+    background: rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 15px;
+    min-width: 120px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.summary-card h2 {
+    font-size: 1.5rem;
+    margin-top: 5px;
+}
+
+.summary-card.owed h2 {
+    color: #E74C3C;
+}
+
+.summary-card.owed-to-you h2 {
+    color: #2ECC71;
+}
+
+.expenses-list {
+    display: grid;
+    gap: 15px;
+    padding: 15px;
+}
+
+.expense-card {
+    background: white;
+    border-radius: 15px;
+    padding: 18px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-left: 5px solid var(--other-color);
+}
+
+.expense-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.expense-card.food {
+    border-left-color: var(--food-color);
+}
+
+.expense-card.entertainment {
+    border-left-color: var(--entertainment-color);
+}
+
+.expense-card.transportation {
+    border-left-color: var(--transportation-color);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.category-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    color: var(--primary);
+}
+
+.expense-card.food .category-icon {
+    color: var(--food-color);
+    background: rgba(231, 76, 60, 0.1);
+}
+
+.expense-card.entertainment .category-icon {
+    color: var(--entertainment-color);
+    background: rgba(155, 89, 182, 0.1);
+}
+
+.expense-card.transportation .category-icon {
+    color: var(--transportation-color);
+    background: rgba(52, 152, 219, 0.1);
+}
+
+.expense-title {
+    flex-grow: 1;
+}
+
+.expense-title h3 {
+    font-size: 1.1rem;
+    margin-bottom: 3px;
+}
+
+.expense-title p {
+    color: #7F8C8D;
+    font-size: 0.9rem;
+}
+
+.expense-amount {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 15px;
+    border-top: 1px solid #ECF0F1;
+}
+
+.members {
+    display: flex;
+}
+
+.member-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-right: -8px;
+    border: 2px solid white;
+}
+
+.expense-date {
+    color: #95A5A6;
+    font-size: 0.9rem;
+}
+
+/* Animations */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .summary-cards {
+        gap: 10px;
+    }
+    
+    .summary-card {
+        min-width: 100px;
+        padding: 12px;
+    }
+    
+    .expense-card {
+        padding: 15px;
+    }
+}

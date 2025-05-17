@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expenses - BhaagLagam</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1e1e2f;
+            --accent: #ff4b5c;
+            --light: #f4f4f9;
+            --dark: #141414;
+            --gradient: linear-gradient(135deg, #ff4b5c, #f9cb28);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--primary);
+            color: var(--light);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(0, 0, 0, 0.2);
+            margin-bottom: 2rem;
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        .profile-section {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+        }
+
+        .profile-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--dark);
+            border-radius: 8px;
+            padding: 1rem;
+            min-width: 200px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+        }
+
+        .profile-section:hover .profile-dropdown {
+            display: block;
+        }
+
+        .profile-info {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-email {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .profile-actions a {
+            display: block;
+            padding: 0.5rem;
+            color: var(--light);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .profile-actions a:hover {
+            color: var(--accent);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .expenses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .expense-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .expense-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .expense-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .expense-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .expense-info h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .expense-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .expense-members {
+            display: flex;
+            margin-right: -8px;
+        }
+
+        .member-avatar {
+            width: 32px;
+            height: 32px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+            margin-right: -8px;
+            border: 2px solid var(--primary);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--primary);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 500px;
+            margin: 2rem auto;
+            position: relative;
+        }
+
+        .modal-header {
+            margin-bottom: 1.5rem;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--light);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--light);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--light);
+            font-size: 1rem;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .expense-details {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+            display: none;
+        }
+
+        .expense-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .info-item {
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .info-item .label {
+            display: block;
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-item .value {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .splits-section {
+            margin-top: 2rem;
+        }
+
+        .splits-grid {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .split-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .split-item .user {
+            flex: 1;
+        }
+
+        .split-item .amount {
+            font-weight: 600;
+        }
+
+        .amount.positive {
+            color: #4CAF50;
+        }
+
+        .amount.negative {
+            color: var(--accent);
+        }
+
+        .custom-splits {
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .custom-split-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .custom-split-item input {
+            width: 100px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--light);
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="dashboard.html" class="nav-brand">BhaagLagam</a>
+        <div class="nav-links">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="groups.html">Groups</a>
+            <a href="expenses.html">Expenses</a>
+            <div class="profile-section">
+                <div class="profile-avatar" id="profile-avatar"></div>
+                <div class="profile-dropdown">
+                    <div class="profile-info">
+                        <div class="profile-name" id="profile-name"></div>
+                        <div class="profile-email" id="profile-email"></div>
+                    </div>
+                    <div class="profile-actions">
+                        <a href="profile.html">View Profile</a>
+                        <a href="#" onclick="logout()">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h1>My Expenses</h1>
+            <button class="btn btn-primary" onclick="document.getElementById('create-expense-modal').style.display='block'">
+                <i class="fas fa-plus"></i> Add Expense
+            </button>
+        </div>
+
+        <div class="filters">
+            <div class="filter-group">
+                <select id="group-filter" onchange="filterExpenses()">
+                    <option value="">All Groups</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <select id="time-filter" onchange="filterExpenses()">
+                    <option value="all">All Time</option>
+                    <option value="today">Today</option>
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="expenses-list" class="expenses-grid">
+            <!-- Expenses will be loaded here dynamically -->
+        </div>
+
+        <div id="expense-details" class="expense-details">
+            <!-- Expense details will be loaded here dynamically -->
+        </div>
+    </div>
+
+    <!-- Create Expense Modal -->
+    <div id="create-expense-modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="document.getElementById('create-expense-modal').style.display='none'">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="modal-header">
+                <h2>Add New Expense</h2>
+            </div>
+            <form id="create-expense-form">
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <input type="text" id="description" name="description" required placeholder="What's this expense for?">
+                </div>
+                <div class="form-group">
+                    <label for="amount">Amount</label>
+                    <input type="number" id="amount" name="amount" required min="0.01" step="0.01" placeholder="Enter amount">
+                </div>
+                <div class="form-group">
+                    <label for="group">Group</label>
+                    <select id="group" name="group_id" required>
+                        <option value="">Select a group</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="split-type">Split Type</label>
+                    <select id="split-type" name="split_type" required onchange="toggleCustomSplits()">
+                        <option value="equal">Split Equally</option>
+                        <option value="percentage">Split by Percentage</option>
+                        <option value="custom">Custom Split</option>
+                    </select>
+                </div>
+                <div id="custom-splits" class="custom-splits">
+                    <!-- Custom split inputs will be added here dynamically -->
+                </div>
+                <button type="submit" class="btn btn-primary">Create Expense</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/expenses.js"></script>
+</body>
+</html>
+</html>

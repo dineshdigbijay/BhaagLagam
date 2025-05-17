@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Groups - BhaagLagam</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    :root {
+      --primary: #1e1e2f;
+      --accent: #ff4b5c;
+      --light: #f4f4f9;
+      --dark: #141414;
+      --gradient: linear-gradient(135deg, #ff4b5c, #f9cb28);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--primary);
+      color: var(--light);
+      min-height: 100vh;
+    }
+
+    .container {
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .groups-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .group-card {
+      background: var(--dark);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease;
+    }
+
+    .group-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .group-header {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .group-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--primary);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+
+    .group-info h3 {
+      margin: 0;
+      color: white;
+    }
+
+    .group-info p {
+      margin: 0.5rem 0 0;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .group-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .group-members {
+      display: flex;
+      align-items: center;
+    }
+
+    .member-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      margin-right: -8px;
+      border: 2px solid var(--dark);
+    }
+
+    .more-members {
+      background: var(--text-muted);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-muted);
+    }
+
+    .empty-state i {
+      margin-bottom: 1rem;
+    }
+
+    .empty-state p {
+      margin-bottom: 1.5rem;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+      z-index: 1000;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background: var(--dark);
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      animation: slideIn 0.3s ease-out;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      color: white;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .close-btn:hover {
+      color: white;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: white;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--darker);
+      color: white;
+      font-size: 1rem;
+    }
+
+    .form-group textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .form-group small {
+      display: block;
+      margin-top: 0.5rem;
+      color: var(--text-muted);
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      color: white;
+      z-index: 1000;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    .notification.success {
+      background: var(--success);
+    }
+
+    .notification.error {
+      background: var(--error);
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: rgba(0, 0, 0, 0.2);
+      margin-bottom: 2rem;
+    }
+
+    .nav-brand {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--light);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+
+    .profile-section {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .profile-avatar {
+      width: 40px;
+      height: 40px;
+      background: var(--gradient);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: white;
+    }
+
+    .profile-dropdown {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: var(--dark);
+      border-radius: 8px;
+      padding: 1rem;
+      min-width: 200px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      z-index: 100;
+    }
+
+    .profile-section:hover .profile-dropdown {
+      display: block;
+    }
+
+    .profile-info {
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .profile-name {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .profile-email {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    .profile-actions a {
+      display: block;
+      padding: 0.5rem;
+      color: var(--light);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .profile-actions a:hover {
+      color: var(--accent);
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 75, 92, 0.3);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .friends-list {
+      max-height: 300px;
+      overflow-y: auto;
+      margin: 1rem 0;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+    }
+
+    .friend-card {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem;
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .friend-card:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .friend-select {
+      display: flex;
+      align-items: center;
+    }
+
+    .friend-checkbox {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+
+    .friend-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+
+    .friend-info {
+      flex: 1;
+    }
+
+    .friend-name {
+      font-weight: 600;
+    }
+
+    .friend-email {
+      font-size: 0.9rem;
+      opacity: 0.7;
+    }
+
+    .selected-friends-section {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+    }
+
+    .selected-friends-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .selected-friend-tag {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--accent);
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+
+    .selected-friend-tag button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 0;
+      opacity: 0.7;
+    }
+
+    .selected-friend-tag button:hover {
+      opacity: 1;
+    }
+
+    .header-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .group-details {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 2rem;
+      margin-top: 2rem;
+      display: none;
+    }
+
+    .member-list {
+      list-style: none;
+      margin: 1rem 0;
+    }
+
+    .member-list li {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .expense-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .expense-amount {
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .expense-date {
+      opacity: 0.7;
+      font-size: 0.9rem;
+    }
+
+    .friends-section {
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+    }
+
+    .invite-friend-section {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 1rem;
+    }
+
+    .friends-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .friend-card {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      transition: transform 0.3s ease;
+    }
+
+    .friend-card:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .friend-select {
+      display: flex;
+      align-items: center;
+    }
+
+    .friend-checkbox {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    .friend-avatar {
+      width: 40px;
+      height: 40px;
+      background: var(--gradient);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: white;
+    }
+
+    .friend-info {
+      flex: 1;
+    }
+
+    .friend-name {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .friend-email {
+      font-size: 0.9rem;
+      opacity: 0.7;
+    }
+
+    .selected-friends-container {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+    }
+
+    .selected-friends-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .selected-friend-tag {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--primary);
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+
+    .selected-friend-tag button {
+      background: none;
+      border: none;
+      color: var(--light);
+      cursor: pointer;
+      padding: 0;
+      font-size: 1.2rem;
+      line-height: 1;
+      opacity: 0.7;
+    }
+
+    .selected-friend-tag button:hover {
+      opacity: 1;
+    }
+
+    .group-creation-section {
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    .create-group-action {
+      display: flex;
+      justify-content: center;
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-sm {
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+    }
+
+    .friends-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+    }
+
+    .invite-friend-btn {
+      margin-right: 0.5rem;
+    }
+
+    #create-group-friends-list {
+      max-height: 300px;
+      overflow-y: auto;
+      margin: 1rem 0;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+    }
+
+    #create-group-friends-list .friend-card {
+      margin-bottom: 0.5rem;
+    }
+
+    #create-group-friends-list .friend-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .selected-friends-section {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+    }
+
+    .selected-friends-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .selected-friend-tag {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--primary);
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+
+    .selected-friend-tag button {
+      background: none;
+      border: none;
+      color: var(--light);
+      cursor: pointer;
+      padding: 0;
+      font-size: 1.2rem;
+      line-height: 1;
+      opacity: 0.7;
+    }
+
+    .selected-friend-tag button:hover {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="dashboard.html" class="nav-brand">BhaagLagam</a>
+    <div class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="groups.html" class="active">Groups</a>
+      <a href="expenses.html">Expenses</a>
+      <div class="profile-section">
+        <div class="profile-avatar" id="profile-avatar"></div>
+        <div class="profile-dropdown">
+          <div class="profile-info">
+            <div class="profile-name" id="profile-name">Loading...</div>
+            <div class="profile-email" id="profile-email">Loading...</div>
+          </div>
+          <div class="profile-actions">
+            <a href="profile.html">View Profile</a>
+            <a href="#" onclick="logout()">Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header">
+      <h1>Groups</h1>
+      <button onclick="showCreateGroupModal()" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Create Group
+      </button>
+    </div>
+
+    <div id="groups-list" class="groups-grid"></div>
+  </div>
+
+  <!-- Create Group Modal -->
+  <div id="create-group-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Create New Group</h2>
+        <button type="button" onclick="closeCreateGroupModal()" class="close-btn">&times;</button>
+      </div>
+      <form id="create-group-form" onsubmit="handleCreateGroup(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="group-name">Group Name</label>
+            <input type="text" id="group-name" name="name" required placeholder="Enter group name">
+          </div>
+          <div class="form-group">
+            <label for="group-description">Description (Optional)</label>
+            <textarea id="group-description" name="description" placeholder="Enter group description"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Select Friends</label>
+            <div id="create-group-friends-list" class="friends-list"></div>
+            <div id="selected-friends-container" class="selected-friends-section"></div>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" onclick="closeCreateGroupModal()" class="btn btn-secondary">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create Group</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Invite Friend Modal -->
+  <div id="invite-friend-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Invite Friend</h2>
+        <button onclick="closeInviteFriendModal()" class="close-btn">&times;</button>
+      </div>
+      <form id="invite-friend-form" onsubmit="handleFriendInvite(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="friend-email">Friend's Email</label>
+            <input type="email" id="friend-email" name="email" required placeholder="Enter friend's email">
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" onclick="closeInviteFriendModal()" class="btn btn-outline">Cancel</button>
+          <button type="submit" class="btn btn-primary">Send Invitation</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/database.js"></script>
+  <script src="js/groups.js"></script>
+</body>
+</html>
